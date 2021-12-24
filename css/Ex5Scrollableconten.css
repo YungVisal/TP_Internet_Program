@@ -1,0 +1,12 @@
+.header{
+    position: fixed;
+    background-color: rgba(128, 128, 128, 0.579);
+    font-size: 50px;
+    padding-left: 50%;
+    padding-right: 50%;
+    margin-top: 0px;
+}
+.content{
+    margin-top: 20%;
+    position: absolute;
+}

@@ -1,0 +1,18 @@
+
+
+@media only screen and (max-width: 792px){
+    .big{ display: none; }
+    
+   
+
+}
+   
+   
+
+@media only screen and (max-width: 350px) {
+    .smal{ display: inline-block; }
+    .big{ display: none; }
+   
+    
+}
+ 
