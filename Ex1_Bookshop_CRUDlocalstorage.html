@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="pic.png" type="image/x-icon">
+    <title>CRUD</title>
+    <style>
+        body {
+            background-color: white;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .add {
+            height: 93vh;
+            width: 300px;
+            background-color: white;
+            border: gray solid 2px;
+            position: fixed;
+            padding: 15px;
+            
+        }
+        
+        .add>div {
+            text-align: center;
+            color:white;
+            background-color: gray;
+            margin-bottom: 20px;
+            font-size: large;
+            padding-top: 10px;
+            height: 30px;
+            
+        }
+        
+        .add input[type=text] {
+            width: 100%;
+            border: 2px solid #aaa;
+            margin: 8px 0;
+            outline: none;
+            padding: 8px;
+            box-sizing: border-box;
+            transition: .3s;
+        }
+        
+        .add input[type=text]:focus {
+            border-color: red;
+            
+        }
+        
+        .add .edit_book {
+            visibility: hidden;
+        }
+        
+        .add_book,
+        .edit_book {
+            background-color: gray;
+            color: white;
+            border-style: outset;
+            border-color: #0066A2;
+            height: 25px;
+            width: 50px;
+            font: bold15px arial, sans-serif;
+            text-shadow: none;
+            height: 30px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        
+        .edit_book {
+            background-color: rgb(31, 31, 95);
+        }
+        
+        .home {
+            height: auto;
+            width: 800px;
+            top: 0px;
+           
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: 350px;
+            border-radius: 10px;
+            background-color: gray;
+            
+        }
+        
+        .home .book-info {
+            background-color: white;
+            text-align: center;
+            height: 35px;
+            font-size: large;
+            color: black;
+            position: sticky;
+            width: 780px;
+            margin: 10px 0 10px 10px;
+            border: black solid 2px;
+           
+        }
+        
+        .home .items {
+            text-align: center;
+            width: 23%;
+            margin: 1%;
+            margin-left: 1%;
+           
+           border: black solid 2px;
+           background-color: white;
+            border-radius: 15px;
+        }
+        
+        .items>img {
+            margin-top: 10px;
+            margin-bottom: 10px;
+           
+        }
+        
+        .items .name,
+        .price,
+        .category {
+            text-align: start;
+            margin-left: 10px;
+            padding-top: 10px;
+        }
+        
+        .button {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .button .editBtn,
+        .deletBtn {
+            border-radius: 5px;
+            background-color: rgb(31, 31, 95);
+            color: white;
+            border-style: outset;
+            border-color: gray;
+            text-shadow: none;
+            height: 30px;
+        }
+        
+        .deletBtn {
+            margin-left: 4px;
+            background-color: rgba(239, 54, 54);
+        }
+        
+        .edit_book {
+            margin-left: -55px;
+            text-align: center;
+            width: 60px;
+        }
+        
+        .items>img {
+            height: 90px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form autocomplete="off" onsubmit="onFormSubmit()">
+            <div class="add">
+                <div class="header-add">Add new book here!</div>
+
+                <label for="name_book">Name</label>
+                <input type="text" name="name" id="name_book" placeholder="c programming" onclick="if(this.placeholder == 'c programming') {this.placeholder = ''}" onBlur="if(this.placeholder == '') {this.placeholder = 'c programming'}" />
+                <label for="price">Price</label>
+                <input type="text" name="price_book" id="price_book" placeholder="1000" onclick="if(this.placeholder == '1000') {this.placeholder = ''}" onBlur="if(this.placeholder == '') {this.placeholder = '1000'}" />
+                <label for="category_book">Category</label>
+                <input type="text" name="category" id="category_book" placeholder="coding" onclick="if(this.placeholder == 'coding') {this.placeholder = ''}" onBlur="if(this.placeholder == '') {this.placeholder = 'coding'}" />
+
+
+                <button type="submit" class="add_book">Add</button>
+                <button type="submit" class="edit_book">update</button>
+
+            </div>
+        </form>
+        <div class="home" id="add_items">
+            <div class="book-info">Book</div>
+        </div>
+
+        <script>
+            var selectedRow = null;
+          
+            let header = document.getElementsByClassName("header-add")[0];
+            //read data from local strorage and display
+            let books = [{}];
+            const getB = localStorage.getItem('books');
+            const dataB = JSON.parse(getB);
+            for (databook in dataB) {
+                document.getElementById("add_items").innerHTML +=
+                    `<div class="items"><img src="book.jpg" alt="#"><div class="name">Name : ${dataB[databook].name}</div><div class="price">Price : ${dataB[databook].price} riels</div><div class="category">Category : ${dataB[databook].category}</div><div class="button"><button id="${parseInt(databook)}" class="editBtn" onclick="editBook(this.id)">Edit</button><button id="${parseInt(databook)}" class="deletBtn" onclick="deleteBook(this.id)">Delete</button></div></div>`;
+            }
+
+            function onFormSubmit(e) {
+                event.preventDefault();
+                var formData = readFormData();
+                if (selectedRow === null) {
+                    insertNewRecord(formData);
+                    console.log("hello")
+                } else {
+                    updateRecord(formData);
+                }
+                resetForm();
+            }
+
+            //clear placeholder
+            document.querySelector('.add_book').placeholder = '';
+
+            //Retrieve the data
+            function readFormData() {
+                var formData = {};
+                formData["name_book"] = document.getElementById("name_book").value;
+                formData["price_book"] = document.getElementById("price_book").value;
+                formData["category_book"] = document.getElementById("category_book").value;
+
+                return formData;
+            }
+
+            //Insert the data
+            function insertNewRecord(data) {
+                const getdata = localStorage.getItem('books');
+                let databookss = JSON.parse(getdata);
+                books = Object.assign([{}], databookss);
+                let x;
+                if (databookss == null) {
+                    x = 0
+                } else {
+                    x = databookss.length;
+                }
+                const book = {
+                    name: `${data.name_book}`,
+                    price: `${data.price_book}`,
+                    category: `${data.category_book}`
+                };
+                books[x] = book;
+                localStorage.setItem('books', JSON.stringify(books));
+                let databooks = getbooks();
+
+                document.getElementById("add_items").innerHTML +=
+                    `<div class="items"><img src="book.jpg" alt="#"><div class="name" data="${data.name_book}">Name : ${data.name_book}</div><div class="price">Price : ${data.price_book} riels</div><div class="category">Category : ${data.category_book}</div><div class="button"><button id="${parseInt(x+1)}" class="editBtn" onclick="editBook(this.id)">Edit</button><button id="${parseInt(x+1)}" class="deletBtn" onclick="deleteBook(this.id)">Delete</button></div></div>`;
+                x++;
+            }
+
+            //Edit the data
+            function editBook(id) {
+                header.innerHTML = "Edit information here!";
+                header.style.backgroundColor = "rgb(31, 31, 95)";
+                let getdatabooks = getbooks();
+
+
+                selectedRow = id;
+                document.getElementsByClassName("edit_book")[0].style.visibility = 'visible';
+                document.getElementsByClassName("add_book")[0].style.visibility = 'hidden';
+
+                document.getElementById('name_book').value = names[id];
+                document.getElementById('price_book').value = price[id];
+                document.getElementById('category_book').value = category[id];
+            }
+
+            function updateRecord(formData) {
+                document.getElementsByClassName("name")[selectedRow].innerHTML = "Name : " + formData.name_book;
+                document.getElementsByClassName("price")[selectedRow].innerHTML = "Price : " + formData.price_book + " riels";
+                document.getElementsByClassName("category")[selectedRow].innerHTML = "Category : " + formData.category_book;
+                document.getElementsByClassName("edit_book")[0].style.visibility = 'hidden';
+                document.getElementsByClassName("add_book")[0].style.visibility = 'visible';
+                 //get books from localstorage
+                 let bookss = getbooks();
+                const bookUpdate = {
+                    name: `${formData.name_book}`,
+                    price: `${formData.price_book}`,
+                    category: `${formData.category_book}`
+                };
+
+                //merge bookss to books
+                books = Object.assign([{}], bookss);
+                books[selectedRow] = bookUpdate;
+                localStorage.setItem('books', JSON.stringify(books));
+
+
+                names[selectedRow] = formData.name_book;
+                price[selectedRow] = formData.price_book;
+                category[selectedRow] = formData.category_book;
+
+                document.getElementsByClassName("header-add")[0].innerHTML = "Add new book here!";
+                header.style.backgroundColor = "rgb(31, 31, 95)";
+                selectedRow = null;
+            }
+
+            //delete
+            function deleteBook(id) {
+                //get books from localstorage
+                let databooks = getbooks();
+                if (confirm('Do you want to delete this record?')) {
+                    //remove books at id and count 1
+                    databooks.splice(id, 1);
+                    localStorage.setItem('books', JSON.stringify(databooks));
+
+                    //reset home to update id element
+                    document.getElementById("add_items").innerHTML = '';
+                    for (databook in databooks) {
+                        document.getElementById("add_items").innerHTML +=
+                            `<div class="items"><img src="book.jpg" alt="#"><div class="name">Name : ${databooks[databook].name}</div><div class="price">Price : ${databooks[databook].price} riels</div><div class="category">Category : ${databooks[databook].category}</div><div class="button"><button id="${parseInt(databook)}" class="editBtn" onclick="editBook(this.id)">Edit</button><button id="${parseInt(databook)}" class="deletBtn" onclick="deleteBook(this.id)">Delete</button></div></div>`;
+                    }
+                }
+                resetForm();
+            }
+
+            function resetForm() {
+                document.getElementById('name_book').value = '';
+                document.getElementById('price_book').value = '';
+                document.getElementById('category_book').value = '';
+            }
+             //get books from localstorage
+             function getbooks() {
+                const getbooks = localStorage.getItem('books');
+                let databooks = JSON.parse(getbooks);
+
+                return databooks;
+            }
+        </script>
+
+
+    </div>
+    </div>
+</body>
+
+</html>
