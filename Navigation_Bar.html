@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar</title>
+    <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: rgba(128, 128, 128, 0.342);
+        }
+        
+        .nav-bar {
+            height: 60px;
+            width: 100%;
+            background-color:white;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        
+        .nav-bar>ul {
+            display: flex;
+        }
+        
+        .nav-bar>ul>li {
+            list-style-type: none;
+        }
+        
+        li>a {
+            text-decoration: none;
+        }
+        
+        .menu>li {
+            margin: 1rem;
+        }
+        
+        .social>li {
+            margin: 0.5rem;
+        }
+        
+        .hamburger-menu {
+            display: none;
+            position: absolute;
+            color: rgb(25, 27, 27);
+            right: 1rem;
+            background-color: white;
+        }
+        
+        .hamburger-menu:hover {
+            background-color: aliceblue;
+        }
+        
+        .sub-bar {
+            display: none;
+            position: relative;
+            height: auto;
+            background-color: #fafafa;
+        }
+        
+        .sub-bar>ul {
+            margin: 0;
+        }
+        
+        @media screen and (max-width: 600px) {
+            .menu>li,
+            .social>li {
+                display: none;
+            }
+            .hamburger-menu {
+                display: block;
+            }
+            .responsive {
+                display: block;
+                color: white;
+                float: none;
+                flex-direction: column;
+            }
+            .responsive>ul>li {
+                margin: 0 .5rem .5rem .5rem;
+                list-style-type: none;
+            }
+            /* li>a {
+
+            } */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="nav-bar">
+        <div>NAV-BAR</div>
+        <ul class="menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Project</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+        <ul class="social">
+            <li><a href="#"><i class='bx bxl-facebook-circle'></i></a></li>
+            <li><a href="#"><i class='bx bxl-twitter'></i></a></li>
+            <li><a href="#"><i class='bx bxl-meta'></i></a></li>
+            <li><a href="#"><i class='bx bxl-linkedin-square' ></i></a></li>
+            <li><a href="#"><i class='bx bxs-diamond' ></i></a></li>
+        </ul>
+        <div class="hamburger-menu" onclick="enable_menu()">
+            <a href="#"><i class='bx bx-menu'></i></a>
+        </div>
+    </div>
+    <div class="sub-bar" id="my-nav">
+        <ul class="sub-menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Project</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </div>
+    <div>Hello This is visal!</div>
+
+    <script>
+        var enable_menu = () => {
+            let en = document.getElementById('my-nav');
+            if (en.className == 'sub-bar') {
+                en.className += ' responsive';
+            } else {
+                en.className = 'sub-bar';
+            }
+        }
+    </script>
+</body>
+
+</html>
